@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "239936759539",
+    "project_id": "baby-health-app",
+    "storage_bucket": "baby-health-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239936759539:android:be945832320695f672b986",
+        "android_client_info": {
+          "package_name": "com.example.baby_health_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239936759539-3rtb4jep19erl30raaa502h2rj9oe5oe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.baby_health_app",
+            "certificate_hash": "572cf2c8a4b002df4c568d42c2299f7103c238b8"
+          }
+        },
+        {
+          "client_id": "239936759539-go9na37r3140n6c5eublqhfjt3pg5c7c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxUOLYBabyGXF9RQUse1l1j4yj3jWimpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239936759539-go9na37r3140n6c5eublqhfjt3pg5c7c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
