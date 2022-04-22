@@ -33,7 +33,6 @@ class _EmailLogInState extends State<EmailLogIn> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  // The validator receives the text that the user has entered.
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Enter Email Address';
@@ -55,7 +54,6 @@ class _EmailLogInState extends State<EmailLogIn> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                  // The validator receives the text that the user has entered.
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Enter Password';

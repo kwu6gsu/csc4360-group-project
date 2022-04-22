@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'signup.dart';
+import 'ailments.dart';
 
 class Home extends StatefulWidget {
   final String? uid;
@@ -40,8 +41,18 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      body: Column(
-        children: [],
+      body: ListView(
+        children: [
+          Card(
+            child: ListTile(
+              title: Text('Ailments'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AilmentsScreen()));
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
