@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AilmentsScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class AilmentsScreen extends StatefulWidget {
 class _AilmentsScreenState extends State<AilmentsScreen> {
   late String titleText;
   late String descText;
+  late double ratingValue;
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descController = TextEditingController();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -22,6 +24,7 @@ class _AilmentsScreenState extends State<AilmentsScreen> {
     return ailmentsCollection.add({
       'title': _titleController.text,
       'description': _descController.text,
+      'severity': ratingValue,
       'submitted': DateTime.now()
     });
   }
@@ -31,6 +34,7 @@ class _AilmentsScreenState extends State<AilmentsScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
+            scrollable: true,
             title: Text("Enter Information"),
             content: Column(
               children: [
@@ -55,6 +59,26 @@ class _AilmentsScreenState extends State<AilmentsScreen> {
                   },
                   controller: _descController,
                 ),
+                Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Severity"))),
+                RatingBar.builder(
+                  initialRating: 0,
+                  minRating: 0.5,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 3.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    ratingValue = rating;
+                  },
+                )
               ],
             ),
             actions: <Widget>[
@@ -85,13 +109,35 @@ class _AilmentsScreenState extends State<AilmentsScreen> {
   }
 
   Future<void> _displayAilmentDialog(
-      BuildContext context, String title, String desc) async {
+      BuildContext context, String title, String desc, double rating) async {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            scrollable: true,
             title: Text(title),
-            content: Text(desc),
+            content: Column(
+              children: [
+                Align(alignment: Alignment.centerLeft, child: Text(desc)),
+                Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Severity"))),
+                RatingBar.builder(
+                  initialRating: rating,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 3.0),
+                  itemBuilder: (context, _) => Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {},
+                )
+              ],
+            ),
             actions: <Widget>[
               TextButton(
                 child: Text('CLOSE'),
@@ -109,7 +155,7 @@ class _AilmentsScreenState extends State<AilmentsScreen> {
   Future<void> _displayDeleteDialog(DocumentReference reference) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           content: SingleChildScrollView(
@@ -182,8 +228,8 @@ class _AilmentsScreenState extends State<AilmentsScreen> {
                             _displayAilmentDialog(
                                 context,
                                 snapshot.requireData.docs[index]['title'],
-                                snapshot.requireData.docs[index]
-                                    ['description']);
+                                snapshot.requireData.docs[index]['description'],
+                                snapshot.requireData.docs[index]['severity']);
                           },
                           trailing: IconButton(
                               onPressed: () {
