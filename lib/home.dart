@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'signup.dart';
 import 'ailments.dart';
+import 'medical_history.dart';
 
 class Home extends StatefulWidget {
   final String? uid;
@@ -49,6 +50,17 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AilmentsScreen()));
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: Text('Medical History'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MedicalHistoryScreen()));
               },
             ),
           ),
