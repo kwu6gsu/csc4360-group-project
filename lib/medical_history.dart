@@ -12,6 +12,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
   late String descText;
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descController = TextEditingController();
+  TextEditingController _dateController = TextEditingController();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final CollectionReference medicalHistoryCollection = FirebaseFirestore
       .instance
@@ -21,8 +22,9 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
 
   Future<void> saveMedication() {
     return medicalHistoryCollection.add({
-      'title': _titleController.text,
-      'description': _descController.text,
+      'title': titleText,
+      'description': descText,
+      'date': _dateController.text,
       'submitted': DateTime.now()
     });
   }
@@ -57,6 +59,21 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                   },
                   controller: _descController,
                 ),
+                TextFormField(
+                  controller: _dateController,
+                  decoration: InputDecoration(
+                    hintText: "Date",
+                  ),
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    DateTime date = (await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(DateTime.now().year - 20),
+                        lastDate: DateTime(DateTime.now().year + 20)))!;
+                    _dateController.text = date.toString().substring(0, 10);
+                  },
+                )
               ],
             ),
             actions: <Widget>[
@@ -69,6 +86,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                   saveMedication();
                   _titleController.clear();
                   _descController.clear();
+                  _dateController.clear();
                 },
               ),
               TextButton(
@@ -78,6 +96,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                     Navigator.pop(context);
                     _titleController.clear();
                     _descController.clear();
+                    _dateController.clear();
                   });
                 },
               ),
@@ -87,7 +106,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
   }
 
   Future<void> _displayMedicationDialog(
-      BuildContext context, String title, String desc) async {
+      BuildContext context, String title, String date, String desc) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -96,7 +115,11 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
             title: Text(title),
             content: Column(
               children: [
-                Align(alignment: Alignment.centerLeft, child: Text(desc)),
+                Align(alignment: Alignment.centerLeft, child: Text(date)),
+                Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Align(
+                        alignment: Alignment.centerLeft, child: Text(desc))),
               ],
             ),
             actions: <Widget>[
@@ -170,7 +193,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                   .collection('users')
                   .doc(firebaseAuth.currentUser!.uid)
                   .collection('medical history')
-                  .orderBy('submitted')
+                  .orderBy('date')
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasData) {
@@ -182,13 +205,13 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                             child: ListTile(
                           title:
                               Text(snapshot.requireData.docs[index]['title']),
-                          subtitle: Text(
-                              snapshot.requireData.docs[index]['description'],
-                              maxLines: 1),
+                          subtitle:
+                              Text(snapshot.requireData.docs[index]['date']),
                           onTap: () {
                             _displayMedicationDialog(
                                 context,
                                 snapshot.requireData.docs[index]['title'],
+                                snapshot.requireData.docs[index]['date'],
                                 snapshot.requireData.docs[index]
                                     ['description']);
                           },
