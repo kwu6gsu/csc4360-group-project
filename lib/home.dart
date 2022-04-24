@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'ailments.dart';
 import 'medical_history.dart';
+import 'growth.dart';
 
 class Home extends StatefulWidget {
   final String? uid;
@@ -44,6 +45,15 @@ class _HomeState extends State<Home> {
       ),
       body: ListView(
         children: [
+          Card(
+            child: ListTile(
+              title: Text('Growth'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => GrowthScreen()));
+              },
+            ),
+          ),
           Card(
             child: ListTile(
               title: Text('Ailments'),
