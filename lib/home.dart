@@ -7,6 +7,7 @@ import 'ailments.dart';
 import 'medical_history.dart';
 import 'growth.dart';
 import 'nutrition.dart';
+import 'sleep.dart';
 
 class Home extends StatefulWidget {
   final String? uid;
@@ -61,6 +62,15 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => NutritionScreen()));
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: Text('Sleep'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SleepScreen()));
               },
             ),
           ),
