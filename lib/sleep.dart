@@ -19,7 +19,7 @@ class _SleepScreenState extends State<SleepScreen> {
   final CollectionReference sleepCollection = FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('sleeping schedule');
+      .collection('sleep');
 
   Future<void> saveSleep() {
     return sleepCollection.add({
@@ -199,7 +199,7 @@ class _SleepScreenState extends State<SleepScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sleeping Schedule"),
+        title: Text("Sleep"),
       ),
       body: Column(
         children: [
@@ -215,7 +215,7 @@ class _SleepScreenState extends State<SleepScreen> {
               stream: FirebaseFirestore.instance
                   .collection('users')
                   .doc(firebaseAuth.currentUser!.uid)
-                  .collection('sleeping schedule')
+                  .collection('sleep')
                   .orderBy('date')
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
