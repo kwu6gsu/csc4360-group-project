@@ -8,20 +8,23 @@ class SleepScreen extends StatefulWidget {
 }
 
 class _SleepScreenState extends State<SleepScreen> {
-  late String hoursText;
+  late String startText;
+  late String endText;
   late String descText;
-  TextEditingController _hoursController = TextEditingController();
+  TextEditingController _startController = TextEditingController();
+  TextEditingController _endController = TextEditingController();
   TextEditingController _descController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final CollectionReference sleepCollection = FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser!.uid)
-      .collection('sleep');
+      .collection('sleeping schedule');
 
   Future<void> saveSleep() {
     return sleepCollection.add({
-      'hours': hoursText,
+      'start_time': startText,
+      'end_time': endText,
       'description': descText,
       'date': _dateController.text,
       'submitted': DateTime.now()
@@ -37,14 +40,31 @@ class _SleepScreenState extends State<SleepScreen> {
             title: Text("Enter Information"),
             content: Column(
               children: [
-                TextField(
-                  decoration: InputDecoration(hintText: "Hours Slept"),
-                  onChanged: (value) {
-                    setState(() {
-                      hoursText = value;
-                    });
+                TextFormField(
+                  controller: _startController,
+                  decoration: InputDecoration(
+                    hintText: "Start Time",
+                  ),
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    TimeOfDay start_time = (await showTimePicker(
+                        context: context, initialTime: TimeOfDay.now()))!;
+                    _startController.text = start_time.format(context);
+                    startText = _startController.text;
                   },
-                  controller: _hoursController,
+                ),
+                TextFormField(
+                  controller: _endController,
+                  decoration: InputDecoration(
+                    hintText: "End Time",
+                  ),
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    TimeOfDay end_time = (await showTimePicker(
+                        context: context, initialTime: TimeOfDay.now()))!;
+                    _endController.text = end_time.format(context);
+                    endText = _endController.text;
+                  },
                 ),
                 TextField(
                   decoration: InputDecoration(hintText: "Description"),
@@ -83,7 +103,8 @@ class _SleepScreenState extends State<SleepScreen> {
                     Navigator.pop(context);
                   });
                   saveSleep();
-                  _hoursController.clear();
+                  _startController.clear();
+                  _endController.clear();
                   _descController.clear();
                   _dateController.clear();
                 },
@@ -93,7 +114,8 @@ class _SleepScreenState extends State<SleepScreen> {
                 onPressed: () {
                   setState(() {
                     Navigator.pop(context);
-                    _hoursController.clear();
+                    _startController.clear();
+                    _endController.clear();
                     _descController.clear();
                     _dateController.clear();
                   });
@@ -104,8 +126,8 @@ class _SleepScreenState extends State<SleepScreen> {
         });
   }
 
-  Future<void> _displaySleepDialog(
-      BuildContext context, String date, String hours, String desc) async {
+  Future<void> _displaySleepDialog(BuildContext context, String date,
+      String start_time, String end_time, String desc) async {
     return showDialog(
         context: context,
         builder: (context) {
@@ -114,7 +136,9 @@ class _SleepScreenState extends State<SleepScreen> {
             title: Text(date),
             content: Column(
               children: [
-                Align(alignment: Alignment.centerLeft, child: Text(hours)),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(start_time + " to " + end_time)),
                 Padding(
                     padding: EdgeInsets.only(top: 20),
                     child: Align(
@@ -175,7 +199,7 @@ class _SleepScreenState extends State<SleepScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sleep"),
+        title: Text("Sleeping Schedule"),
       ),
       body: Column(
         children: [
@@ -191,7 +215,7 @@ class _SleepScreenState extends State<SleepScreen> {
               stream: FirebaseFirestore.instance
                   .collection('users')
                   .doc(firebaseAuth.currentUser!.uid)
-                  .collection('sleep')
+                  .collection('sleeping schedule')
                   .orderBy('date')
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -203,11 +227,16 @@ class _SleepScreenState extends State<SleepScreen> {
                         return Card(
                             child: ListTile(
                           title: Text(snapshot.requireData.docs[index]['date']),
+                          subtitle: Text(snapshot.requireData.docs[index]
+                                  ['start_time'] +
+                              " to " +
+                              snapshot.requireData.docs[index]['end_time']),
                           onTap: () {
                             _displaySleepDialog(
                                 context,
                                 snapshot.requireData.docs[index]['date'],
-                                snapshot.requireData.docs[index]['hours'],
+                                snapshot.requireData.docs[index]['start_time'],
+                                snapshot.requireData.docs[index]['end_time'],
                                 snapshot.requireData.docs[index]
                                     ['description']);
                           },
