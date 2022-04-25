@@ -54,6 +54,7 @@ class _HomeState extends State<Home> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => GrowthScreen()));
               },
+              trailing: Icon(Icons.child_care),
             ),
           ),
           Card(
@@ -63,6 +64,7 @@ class _HomeState extends State<Home> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => NutritionScreen()));
               },
+              trailing: Icon(Icons.apple),
             ),
           ),
           Card(
@@ -72,6 +74,7 @@ class _HomeState extends State<Home> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SleepScreen()));
               },
+              trailing: Icon(Icons.bedtime),
             ),
           ),
           Card(
@@ -81,6 +84,7 @@ class _HomeState extends State<Home> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AilmentsScreen()));
               },
+              trailing: Icon(Icons.coronavirus),
             ),
           ),
           Card(
@@ -92,6 +96,7 @@ class _HomeState extends State<Home> {
                     MaterialPageRoute(
                         builder: (context) => MedicalHistoryScreen()));
               },
+              trailing: Icon(Icons.assignment),
             ),
           ),
         ],
